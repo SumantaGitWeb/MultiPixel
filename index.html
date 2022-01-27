@@ -83,13 +83,15 @@
                     await this.getPlayers();
                     await this.createCells();
                     this.showForm = false;
-                    this.fetchCells()
+                    await this.fetchCells()
+                    await this.fetchName();
                 },
                 joinRoom : async function(){
                     await db.collection("rooms").doc(this.roomId).collection("players").add({name : this.playerName})
                     await this.getPlayers();
                     this.showForm = false;
-                    this.fetchCells()
+                    await this.fetchCells();
+                    await this.fetchName();
                 },
                 players : [],
                 getPlayers : async function(){console.log("log");
@@ -98,6 +100,11 @@
                             ...doc.data(),
                             id: doc.id,
                         }));
+                    })
+                },
+                fetchName : async function(){
+                    await db.collection("rooms").doc(this.roomId).onSnapshot(snapshot => {
+                        this.roomName = snapshot.data().name
                     })
                 },
 
@@ -119,7 +126,7 @@
                             this.cells.push({
                                 row : i,
                                 col : j,
-                                color : "slate",
+                                color : "white",
                             })
                         }
                     }
